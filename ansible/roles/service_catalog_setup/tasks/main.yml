@@ -27,19 +27,22 @@
     when: docker_pull_svc_cat.changed
     register: new_svc_cat_project
     ignore_errors: yes
-    
+
   - name: Ensuring service-catalog project is selected for those cases of being re-run and skipping the new-project creation
     shell: "{{ oc_cmd }} project service-catalog"
 
-  - name: Copy service-catalog.templ.yaml
-    copy:
-      src: service-catalog.templ.yaml
+  - name: Creating service-catalog.templ.yaml
+    template:
+      src: service-catalog.templ.yaml.j2
       dest: /tmp/service-catalog.templ.yaml
-    register: copy_svc_catalog_tmp
+      owner: root
+      group: root
+      mode: 0644
+    register: create_svc_catalog_tmp
 
   - name: Install Service Catalog through OC Template
     shell: "{{ oc_cmd }} process -f /tmp/service-catalog.templ.yaml | {{ oc_cmd }} create -f -"
-    when: copy_svc_catalog_tmp.changed
+    when: create_svc_catalog_tmp.changed
 
   - name: Waiting 10 minutes for API server pod to come up
     action:
