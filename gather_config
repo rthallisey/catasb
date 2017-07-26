@@ -13,6 +13,7 @@ elif [ "$(pwd | awk -F '/' '{ print $NF }')" == "linux" ]; then
   extra_args+=" -e @${relpath}config/local_vars.yml"
 elif [ "$(pwd | awk -F '/' '{ print $NF }')" == "gate" ]; then
   source ${relpath}config/linux_env_vars
+  extra_args+=" -e @${relpath}config/gating_vars.yml"
   extra_args+=" -e @${relpath}config/local_vars.yml"
 fi
 
