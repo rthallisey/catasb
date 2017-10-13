@@ -330,54 +330,54 @@
   - debug:
       msg: "Looking at oc cluster up command:  '{{ oc_cluster_up_cmd }}'"
 
-  - name: Run oc cluster up to start the cluster
-    shell: "{{ oc_cmd }} cluster down && {{ oc_cluster_up_cmd }}"
-    register: oc_cluster_up
-    retries: 5
-    delay: 10
-  #
-  # Add permissions to desired openshift user
-  # Would be nice if we looked at existing users and permissions and made decisions of what to run
-  # for now, will only run these if we've run oc cluster up
-  #
-  - name: Login as {{ cluster_system_admin }}
-    shell: "{{ oc_cmd }} login -u {{ cluster_system_admin }}"
-    when: oc_cluster_up.changed
+  # - name: Run oc cluster up to start the cluster
+  #   shell: "{{ oc_cmd }} cluster down && {{ oc_cluster_up_cmd }}"
+  #   register: oc_cluster_up
+  #   retries: 5
+  #   delay: 10
+  # #
+  # # Add permissions to desired openshift user
+  # # Would be nice if we looked at existing users and permissions and made decisions of what to run
+  # # for now, will only run these if we've run oc cluster up
+  # #
+  # - name: Login as {{ cluster_system_admin }}
+  #   shell: "{{ oc_cmd }} login -u {{ cluster_system_admin }}"
+  #   when: oc_cluster_up.changed
 
-  - name: Create user {{ cluster_user }}
-    shell: "{{ oc_cmd }} create user {{ cluster_user }}"
-    when: oc_cluster_up.changed
+  # - name: Create user {{ cluster_user }}
+  #   shell: "{{ oc_cmd }} create user {{ cluster_user }}"
+  #   when: oc_cluster_up.changed
 
-  - name: Add cluster-admin role to {{ cluster_user }}
-    shell: "{{ oc_cmd }} adm policy add-cluster-role-to-user cluster-admin {{ cluster_user }}"
-    when: oc_cluster_up.changed
+  # - name: Add cluster-admin role to {{ cluster_user }}
+  #   shell: "{{ oc_cmd }} adm policy add-cluster-role-to-user cluster-admin {{ cluster_user }}"
+  #   when: oc_cluster_up.changed
 
-  - name: Add privileged scc to {{ cluster_user }}
-    shell: "{{ oc_cmd }} adm policy add-scc-to-user privileged {{ cluster_user }}"
-    when: oc_cluster_up.changed
+  # - name: Add privileged scc to {{ cluster_user }}
+  #   shell: "{{ oc_cmd }} adm policy add-scc-to-user privileged {{ cluster_user }}"
+  #   when: oc_cluster_up.changed
 
-  - name: Add anyuid scc to system:authenticated
-    shell: "{{ oc_cmd }} adm policy add-scc-to-group anyuid system:authenticated"
-    when: oc_cluster_up.changed and scc_anyuid == True
+  # - name: Add anyuid scc to system:authenticated
+  #   shell: "{{ oc_cmd }} adm policy add-scc-to-group anyuid system:authenticated"
+  #   when: oc_cluster_up.changed and scc_anyuid == True
 
-  - name: Login as {{ cluster_user }}
-    shell: "{{ oc_cmd }} login -u {{ cluster_user }} -p {{ cluster_user_password }} {{ cluster_url }} --insecure-skip-tls-verify=true"
-    when: oc_cluster_up.changed
+  # - name: Login as {{ cluster_user }}
+  #   shell: "{{ oc_cmd }} login -u {{ cluster_user }} -p {{ cluster_user_password }} {{ cluster_url }} --insecure-skip-tls-verify=true"
+  #   when: oc_cluster_up.changed
 
-  - name: Get the name for service-catalog project
-    shell: "{{ oc_cmd }} get projects --no-headers | grep 'service-catalog' | awk '{ printf \"%s\", $1}'"
-    register: oc_sc_project
+  # - name: Get the name for service-catalog project
+  #   shell: "{{ oc_cmd }} get projects --no-headers | grep 'service-catalog' | awk '{ printf \"%s\", $1}'"
+  #   register: oc_sc_project
 
-  - name: Save name for service-catalog project
-    set_fact:
-      oc_service_catalog: "{{ oc_sc_project.stdout }}"
+  # - name: Save name for service-catalog project
+  #   set_fact:
+  #     oc_service_catalog: "{{ oc_sc_project.stdout }}"
 
-  - debug:
-      msg: "Looking at service-catalog project name {{ oc_service_catalog }}"
+  # - debug:
+  #     msg: "Looking at service-catalog project name {{ oc_service_catalog }}"
 
-  - name: Fail if service-catalog project does not exit
-    fail:
-      msg: "Failed to get the service-catalog project"
-    when: oc_service_catalog == ""
+  # - name: Fail if service-catalog project does not exit
+  #   fail:
+  #     msg: "Failed to get the service-catalog project"
+  #   when: oc_service_catalog == ""
 
-  - include: env_hacks.yml
+  # - include: env_hacks.yml
