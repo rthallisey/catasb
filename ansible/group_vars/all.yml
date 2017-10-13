@@ -96,7 +96,8 @@ asb_project: ansible-service-broker
 # If you want to make changes to deploying the broker, grab a copy of the template and make local changes and update it to point to 'asb_template_url'
 # remember to use a file:// path as in:
 # asb_template_url: file:///path/to/file/deploy.yaml.j2
-asb_template_url: https://raw.githubusercontent.com/openshift/ansible-service-broker/master/templates/deploy-ansible-service-broker.template.yaml
+#asb_template_url: https://raw.githubusercontent.com/openshift/ansible-service-broker/master/templates/deploy-ansible-service-broker.template.yaml
+asb_template_url: file:///home/rhallisey/catasb/ansible/3-6.yaml
 k8s_asb_template_url: https://raw.githubusercontent.com/openshift/ansible-service-broker/master/templates/k8s-ansible-service-broker.yaml.j2
 
 broker_registry_type: dockerhub
