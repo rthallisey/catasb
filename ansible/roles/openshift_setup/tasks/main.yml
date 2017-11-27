@@ -295,7 +295,7 @@
       dest: "{{ oc_host_config_dir }}/node-localhost/node-config.yaml"
       regexp: "kubletArguments:\n  fail-swap-on:\n  - \"false\""
       line: "kubeletArguments:\n  fail-swap-on:\n  - \"false\"\n  cgroup-driver:\n  - \"cgroupfs\"\n"
-    when: openshift_build_type == "mac"
+    become: true
 
   - name: Install python-passlib
     package:
