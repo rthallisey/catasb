@@ -6,7 +6,7 @@ if [[ "${1}" == "-k" ]] ||
    [[ "${1}" == "kubernetes" ]]; then
    shift
    export CLUSTER="kubernetes"
-else
+elif [ -z "${CLUSTER}" ]; then
    export CLUSTER="openshift"
 fi
 
