@@ -1,13 +1,4 @@
 ---
-  - name: Setting iptables rules for CNI
-    shell: sudo iptables -t nat -I POSTROUTING ! -o weave -s 10.32.0.1/12 -j MASQUERADE
-
-  - name: Setting iptables rules for CNI
-    shell: sudo iptables -I FORWARD -o weave -j ACCEPT
-
-  - name: Setting iptables rules for CNI
-    shell: sudo iptables -I FORWARD -i weave ! -o weave -j ACCEPT
-
   - name: Setting iptables rules docker
     shell: "sudo iptables -t nat -I POSTROUTING ! -o docker0 -s {{ hostname }}/16 -j MASQUERADE"
 
@@ -24,7 +15,7 @@
 
   - name: Create command line for kubeadm init
     set_fact:
-      kubeadm_command: "kubeadm init --apiserver-advertise-address={{ hostname }}"
+      kubeadm_command: "kubeadm init --apiserver-advertise-address={{ hostname }} --pod-network-cidr 10.18.0.1/16"
 
   - debug:
       msg: "Kubeadm start command: '{{ kubeadm_command }}'"
@@ -61,9 +52,6 @@
     set_fact:
       kube_version: "$(kubectl version | base64 | tr -d '\n')"
 
-  - name: Use Weave Net for CNI
-    shell: "kubectl apply -f https://cloud.weave.works/k8s/net?k8s-version={{ kube_version }}"
-
   - name: Starting Helm Tiller server
     shell: helm init
 
@@ -74,12 +62,8 @@
     retries: 60
     delay: 10
 
-  - name: Wait for Weave CNI pod to be up
-    action: shell kubectl get pods -n kube-system | grep weave-net | grep Running
-    register: wait_for_cni
-    until: wait_for_cni.rc == 0
-    retries: 60
-    delay: 10
+  - name: Create the kube-router
+    shell: "KUBECONFIG=~/.kube/config kubectl apply -f https://raw.githubusercontent.com/cloudnativelabs/kube-router/master/daemonset/kubeadm-kuberouter.yaml"
 
   - name: Wait for tiller server to be up
     action: shell kubectl get pods -n kube-system | grep tiller | grep Running
