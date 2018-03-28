@@ -223,7 +223,7 @@
         --public-hostname={{ hostname }}
         --image={{ origin_image_name }}
         --tag={{ origin_image_tag }}
-        {% if use_custom_config %}--host-config-dir={{ oc_host_config_dir }}{% endif %}
+        {% if use_custom_config %}--host-data-dir={{ oc_host_config_dir }}{% endif %}
         --service-catalog=true
 
   - name: Add proxy options to oc cluster up command
